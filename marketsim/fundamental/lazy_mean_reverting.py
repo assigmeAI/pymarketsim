@@ -31,7 +31,11 @@ class LazyGaussianMeanReverting(Fundamental):
             t (int): The time step to generate the value for.
         """
         dt = t - self.latest_t
-
+        
+        # Handle case where dt is negative or zero
+        if dt <= 0:
+            return
+            
         shocks = torch.randn(dt) * self.shock_std + self.shock_mean
         weights = torch.pow(1 - self.r, torch.arange(dt, dtype=torch.float32))
         total_shock = torch.sum(weights * shocks)
@@ -55,7 +59,11 @@ class LazyGaussianMeanReverting(Fundamental):
             float: The fundamental value at the specified time step.
         """
         if time not in self.fundamental_values:
-            self._generate_at(time)
+            if time <= self.latest_t:
+                # If requesting a time that's already passed, use the latest value
+                self.fundamental_values[time] = self.fundamental_values[self.latest_t]
+            else:
+                self._generate_at(time)
         return self.fundamental_values[time]
 
     def get_fundamental_values(self):
