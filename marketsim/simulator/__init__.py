@@ -3,3 +3,4 @@ from marketsim.simulator.sampled_arrival_simulator import SimulatorSampledArriva
 from marketsim.simulator.sampled_arrival_simulator_custom import SimulatorSampledArrivalCustom
 
 __all__ = ['Simulator', 'SimulatorSampledArrival', 'SimulatorSampledArrivalCustom']
+
